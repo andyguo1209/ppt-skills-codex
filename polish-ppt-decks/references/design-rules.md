@@ -21,13 +21,13 @@
 
 ## Cards
 
-- For visually led decks, use number → title → unique card-level illustration → one-line meaning.
-- Each role, capability, process stage, system, or concept must have a semantically distinct illustration when the reference uses illustrated cards.
+- For visually led decks, number → title → card-level illustration → one-line meaning is an available pattern when the image improves recognition and has a protected safe zone.
+- Roles, capabilities, process stages, systems, or concepts may receive distinct illustrations when the reference uses illustrated cards, but never at the cost of readable text or useful structure.
 - A letter in a circle, number badge, generic line icon, or decorative glow is not a substitute for an illustration.
 - Match the reference's scale: compact technical mini-scenes belong inside cards; do not replace them with one oversized cinematic object or a flat character scene.
 - Keep card fills dark and text high contrast.
 - Avoid large empty rectangles containing only a short label.
-- Avoid "large outer card + small centered content stack". In a two-column comparison, let the illustration occupy at least 10% of the card area and use a side-by-side image/text composition when the card is wide.
+- Avoid "large outer card + small centered content stack". When two columns are actually two processes, replace giant panels with aligned step tracks so equivalent stages can be compared directly. When a wide comparison genuinely needs illustrations, use a side-by-side image/text composition and give each image enough scale to earn its space.
 - Use the full internal width deliberately: illustration on one side, editable title and two levels of meaning on the other. Do not create an unframed narrow column floating inside a wide card.
 - Use equal card heights and consistent internal baselines.
 - Compute the first card's horizontal position from the slide width and the repeated group's total width. Do not hardcode a left origin for an otherwise centered peer group.
