@@ -41,11 +41,12 @@ Record gate state in `approval-ledger.txt` and run `scripts/validate_approval_le
 ## Mandatory visual contract
 
 - Editable-first is only the first gate; a deck is not complete merely because its text and shapes are editable.
-- If the source or style reference is visually led, the output must contain meaningful topic-specific illustrations, diagrams, evidence, charts, product UI, or photography at a comparable cadence.
-- When a supplied reference uses compact illustrations inside cards, reproduce that visual grammar with one unique no-text mini-scene per semantic card. Do not substitute empty cards, letter badges, generic icons, one oversized hero image, or unrelated people/robot artwork.
-- For role, capability, system, process, and concept cards, use `number → editable title → unique illustration → editable one-line meaning` unless the reference clearly uses another structure.
+- If the source or style reference is visually led, match its visual quality with the most suitable medium: editable structure, diagram, evidence, chart, product UI, photography, or illustration. Do not copy its image count mechanically.
+- Every added illustration must have a declared communication job: explain a relationship or mechanism, distinguish concepts faster than text alone, provide evidence, create an intentional hero focus, or add necessary emotional/brand context. If it does none of these, omit it.
+- When a supplied reference uses compact illustrations inside cards, reuse that grammar only where each image improves recognition and the card has a protected image zone. Never squeeze an image into the readable text area to satisfy a visual quota.
+- For role, capability, system, process, and concept cards, `number → editable title → illustration → editable one-line meaning` is an available pattern, not a mandatory formula. Prefer a strong text-and-structure card when the illustration would be redundant or cramped.
 - Do not deliver the first editable layout pass as the final result. Complete the visual plan, generate or source the required assets, insert them, render the full deck, and inspect the result at slide and montage scale.
-- If the user says “all slides”, “every slide”, “所有页面”, or equivalent, treat it literally: every slide, including cover, metrics, hubs, cycles, relationship diagrams, Q&A, and thank-you slides, must contain at least one meaningful topic-specific illustration. Native circles, connectors, charts, or diagrams do not create an exception. An explicit later request for a conventional text-only cover overrides this rule; document the exception in `visual-plan.md`.
+- If the user says “all slides”, “every slide”, “所有页面”, or equivalent, audit every slide literally, but do not force a raster illustration onto every slide. Each page must receive an intentional visual treatment; native diagrams, typography, whitespace, charts, evidence, or a text-first composition may be the correct answer.
 
 ## Non-negotiable input and editability rules
 
@@ -199,11 +200,11 @@ Do not deliver until:
 - The final slide order follows the validated narrative arc; source-page order is not preserved merely for convenience.
 - Every content slide has one explicit primary claim and advances the story.
 - `<task-workspace>/visual-plan.md` exists and the delivered deck follows it, or deviations are recorded.
-- Every eligible card, statement, comparison, process, ladder, case, closing, and Q&A slide contains meaningful topic-specific illustrations or a documented native visual alternative.
-- Fixed illustration quotas are not a completion criterion. Coverage must follow the slide audit and continue until no visually empty eligible page remains.
-- When full-slide coverage was requested, every slide has at least one topic-specific illustration and every semantic card or node that reads as a distinct concept has its own illustration, except a later user-authorized text-only cover recorded in `visual-plan.md`.
+- Every card, statement, comparison, process, ladder, case, closing, and Q&A slide has an intentional visual treatment; illustrations are used only where their declared communication job is stronger than text or native structure alone.
+- Fixed illustration quotas are forbidden as a completion criterion. Coverage follows communication need, not image count.
+- When full-slide coverage was requested, every slide is individually audited and improved, but no slide or semantic card is required to contain an image.
 - No sequence of more than five content slides is visually barren unless explicitly justified in the visual plan.
-- Card and process illustrations are unique to their semantic item and visually consistent as a set.
+- Used card and process illustrations are unique to their semantic item, visually consistent as a set, and placed inside a dedicated safe zone that does not compete with editable text.
 - `<task-workspace>/pipeline/validate_visual_details.mjs <task-workspace>/final-layout` passes; two-digit badges and other compact numeric tokens remain on one line and use text boxes at least 48 px wide, repeated peer-card groups stay within 24 px of the slide center unless an asymmetric composition is explicitly documented, each illustrated comparison card gives its illustration at least 10% of the panel area, no cleanup mask covers more than 2% of an illustration, no later-added semantic illustration covers the readable glyph area of a short label or metric, and every hub uses one connector per node with a 16 px center safe zone.
 - No text or object overflows the canvas.
 - Affected slides have been inspected at full size.

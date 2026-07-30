@@ -61,11 +61,11 @@ Use `prepare_template_starter_deck.mjs` with the validated frame map. Duplicate 
 
 ## 5. Plan visuals
 
-Before writing `transform.mjs`, map every planned output slide from `slide-blueprint.json` to a visual treatment and mark which assets must be generated or sourced. Do not stop after a small set of showcase pages. Every visually empty card, statement, comparison, process, ladder, case, closing, or Q&A slide must receive topic-specific illustrations or a documented native visual alternative.
+Before writing `transform.mjs`, map every planned output slide from `slide-blueprint.json` to a visual treatment and mark which assets must be generated or sourced. Do not stop after a small set of showcase pages. Every visually weak card, statement, comparison, process, ladder, case, closing, or Q&A slide must receive an intentional treatment, but an illustration is justified only when it explains, distinguishes, proves, focuses, or adds necessary emotional/brand context.
 
 Do not count generic badges, single letters in circles, or decorative glow as illustration coverage. Avoid more than three consecutive content slides without a meaningful visual anchor unless the user explicitly requests a text-first deck.
 
-If the user explicitly requests illustrations on all pages, remove all page-type exceptions. Include cover, metrics, hubs, cycles, relationship diagrams, Q&A, and thank-you pages, then verify every slide contains at least one topic-specific illustration.
+If the user explicitly requests attention on all pages, remove all page-type exceptions and audit cover, metrics, hubs, cycles, relationship diagrams, Q&A, and thank-you pages. Do not turn that request into a raster-image quota. If the user literally requests an illustration on every page, flag pages where an image would be redundant or harmful during the visual-plan approval gate instead of silently forcing one into the layout.
 
 If the user later requests a normal text-only title page, treat that as an explicit override: remove the cover illustration, retain only the conference label, title, subtitle, speaker name, and role on one reading axis, and record the exception in `visual-plan.md`. Never replace the removed hero with a hub, relationship diagram, process, or capability model.
 

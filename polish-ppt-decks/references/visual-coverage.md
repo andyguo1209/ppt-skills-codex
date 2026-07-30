@@ -20,11 +20,10 @@ The plan prevents a deck from being technically editable but visually empty.
 
 When the user says “all slides”, “every slide”, “所有页面”, or an equivalent phrase:
 
-- every slide must contain at least one meaningful topic-specific illustration;
-- cover, metrics, hubs, cycles, relationship diagrams, Q&A, and thank-you slides are included;
-- every distinct semantic card or node should receive its own illustration;
-- native circles, arrows, connectors, charts, and diagrams remain editable structure, but they do not count as permission to skip illustration;
-- validate the final PPTX by counting slide images and visually reviewing every slide, not by checking only a montage sample.
+- audit and improve every slide, including cover, metrics, hubs, cycles, relationship diagrams, Q&A, and thank-you slides;
+- choose the visual treatment page by page: illustration, chart, evidence, native diagram, typography, whitespace, or text-first composition;
+- do not translate “all slides” into “an image on every slide”;
+- validate the final PPTX by reviewing every slide at full size, not by counting images or checking only a montage sample.
 
 If the user later explicitly asks for a conventional text-only cover, honor that request, remove the cover illustration, and record the cover as an intentional native-background visual alternative in `visual-plan.md`. Do not compensate by adding a content diagram to the cover.
 
@@ -33,16 +32,16 @@ If the user later explicitly asks for a conventional text-only cover, honor that
 For a normal visual conference deck:
 
 - Audit every slide; do not impose a small fixed illustration quota.
-- Illustrate every visually empty card, statement, comparison, process, ladder, case, closing, and Q&A page unless a native chart, diagram, product UI, evidence screenshot, or photograph communicates the idea better.
+- Improve every visually weak card, statement, comparison, process, ladder, case, closing, and Q&A page; illustrate only when an image communicates the idea better than native structure or text.
 - Avoid more than three consecutive content slides without a meaningful visual anchor.
 - Count charts, diagrams, evidence screenshots, product UI, photos, and topic-specific illustrations as visual anchors.
 - Do not count a letter in a circle, a generic badge, a thin divider, or decorative particles as a visual anchor.
 - More images are not automatically better. Put them where they add recognition, explanation, evidence, emotion, or pacing.
-- A few showcase pages do not compensate for empty card pages elsewhere in the deck. Continue the illustration pass until all eligible pages are covered.
+- A few showcase pages do not compensate for weak pages elsewhere in the deck. Continue the design pass until every page is intentional, but remove redundant or cramped images.
 
 ## Card-level illustration pattern
 
-When a reference slide uses an illustration inside each card, preserve that scale and grammar:
+When a reference slide uses an illustration inside each card, use that scale and grammar only for cards where the illustration earns its space:
 
 ```text
 number
@@ -51,7 +50,7 @@ unique compact illustration
 one-line meaning
 ```
 
-The illustration should be the card's visual center. It must represent the actual role, stage, capability, system, or business concept. Do not replace a requested mini-scene set with one large cinematic machine, a generic robot, or a flat people illustration.
+The illustration should be the card's visual center. It must represent the actual role, stage, capability, system, or business concept and remain inside a dedicated image zone. If the text already communicates the distinction and the card cannot protect that zone, omit the illustration. Do not replace a requested mini-scene set with one large cinematic machine, a generic robot, or a flat people illustration.
 
 ## Generating coherent sets
 
