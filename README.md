@@ -2,7 +2,7 @@
 
 一套面向 Codex 的可编辑 PowerPoint 生成与视觉精修 Skill。
 
-它不只是美化工具。用户可以上传内容型 PPT、讲稿、提纲或混合资料，Skill 会先提取和盘点内容，生成一份可审阅的逐页内容稿，再依据这份内容稿生成可编辑 PPT；如果用户上传的是已有成品稿，也可以保留模板、Logo 和页脚进行视觉精修。
+它不只是美化工具。用户可以上传内容型 PPT、讲稿、提纲或混合资料，Skill 会分阶段生成分享目标、完整演讲稿、逐页内容稿、模板方案和三页视觉样稿；每个重要节点都必须由用户确认，最终才生成完整可编辑 PPT。
 
 > **重要默认规则：参考 PPT 和截图只用于学习风格，不用于提取内容。**
 > 未经用户明确授权，不复制参考稿的文字、数据、案例、图表、故事线或页面顺序。最终标题、正文、卡片、流程、图表和页码必须是 PowerPoint 原生可编辑对象，不接受整页截图或整页生图。
@@ -10,8 +10,11 @@
 ## 能做什么
 
 - 从用户上传的 PPT、文稿、提纲和备注中提取授权内容
+- 先生成完整演讲稿并等待用户确认
 - 把内容整理为叙事主线并切分成逐页蓝图
 - 先生成包含页码、标题、时长、屏幕文案、现场讲稿、转场和视觉建议的逐页内容稿
+- 分页确认后再询问固定模板或自定义风格
+- 先生成封面、普通内容页和复杂页三页视觉样稿，确认后再做全套
 - 自动检查必讲内容是否遗漏、重复或失去来源映射
 - 根据内容和用户模板生成一套新的可编辑 PPT
 - 美化现有 `.pptx`，保留原始模板和母版结构
@@ -60,12 +63,14 @@
     │   ├── recrop_illustration_sheets.mjs
     │   ├── render_page_content.mjs
     │   ├── run_transform.mjs
+    │   ├── validate_approval_ledger.mjs
     │   ├── validate_content_plan.mjs
     │   ├── validate_editability.mjs
     │   ├── validate_illustration_assets.mjs
     │   ├── validate_prompter.mjs
     │   └── validate_visual_details.mjs
     └── references/
+        ├── approval-gates.md
         ├── content-to-deck.md
         ├── design-rules.md
         ├── transform-patterns.md
@@ -107,6 +112,17 @@ git push -u origin main
 $polish-ppt-decks 根据我上传的内容稿生成一套PPT。
 先生成一份逐页内容稿供我审阅，再使用我提供的模板生成，
 所有标题、正文、图表和结构都要可编辑。
+```
+
+默认不会一步到位。Skill 会依次等待确认：
+
+```text
+内容范围
+→ 完整演讲稿
+→ 逐页内容
+→ 固定模板或视觉风格
+→ 三页视觉样稿
+→ 完整PPT
 ```
 
 ### 重新编排内容型 PPT
@@ -151,17 +167,17 @@ $polish-ppt-decks 检查所有卡片页和流程页。
 Skill 会引导 Codex执行以下流程：
 
 ```text
-识别任务模式
+确认内容范围与目标
     ↓
-提取授权内容与来源
+生成并确认完整演讲稿
     ↓
-建立内容清单
+生成并确认逐页内容
     ↓
-设计叙事与逐页蓝图
+询问并确认模板/风格
     ↓
-生成逐页内容稿
+生成并确认三页视觉样稿
     ↓
-检查内容覆盖
+检查审批记录
     ↓
 建立模板映射
     ↓
@@ -183,6 +199,7 @@ Skill 会引导 Codex执行以下流程：
 其中：
 
 - `init_deck_workspace.mjs` 创建标准工作区
+- `validate_approval_ledger.mjs` 阻止未确认阶段直接进入完整 PPT 生成
 - `validate_content_plan.mjs` 检查逐页蓝图、内容覆盖和来源映射
 - `render_page_content.mjs` 生成并核对可审阅的逐页内容稿
 - `run_transform.mjs` 运行当前 PPT 的页面修改逻辑

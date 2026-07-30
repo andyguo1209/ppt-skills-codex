@@ -1,4 +1,4 @@
 interface:
   display_name: "PPT Builder & Polisher"
   short_description: "Turn uploaded content into editable PPTs or refine existing decks"
-  default_prompt: "Use $polish-ppt-decks to extract my uploaded content, draft a reviewable page-by-page script, and generate or refine an editable PowerPoint with complete content and visual QA."
+  default_prompt: "Use $polish-ppt-decks to build my editable PowerPoint in stages, stopping for my approval after the talk manuscript, page content, template choice, and visual proof."

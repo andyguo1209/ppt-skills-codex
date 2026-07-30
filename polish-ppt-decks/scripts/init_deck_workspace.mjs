@@ -27,6 +27,7 @@ for (const fileName of [
   "helpers.mjs",
   "render_page_content.mjs",
   "run_transform.mjs",
+  "validate_approval_ledger.mjs",
   "validate_content_plan.mjs",
   "validate_prompter.mjs",
   "validate_editability.mjs",
@@ -48,6 +49,8 @@ const textFiles = {
   "source-notes.txt": "Source and claim provenance\n",
   "communication-brief.txt":
     "Audience:\nDeck job:\nAudience outcome:\nCentral takeaway:\nDuration:\nLanguage and tone:\nConstraints:\n",
+  "approval-ledger.txt":
+    "# Change a gate to approved only after the user confirms the exact current artifact.\nscope-brief=pending\ntalk-script=pending\npage-content=pending\ntemplate-style=pending\nstyle-proof=pending\none-shot-override=pending\n",
   "prompt-record.txt": "Image generation prompts and selected outputs\n",
   "deviation-log.txt": "Intentional departures from inherited template slides\n",
 };

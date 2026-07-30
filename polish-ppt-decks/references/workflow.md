@@ -21,13 +21,19 @@ For build-from-content and restructure mode:
 
 - create `content-inventory.json` with stable IDs and source locators for all authorized claims, evidence, cases, caveats, notes, tables, and chart meanings;
 - create `communication-brief.txt`;
+- present the communication brief and wait for scope approval;
+- create and present `talk-script.txt`, then stop until the user approves the manuscript;
 - create the human-readable `page-content.txt`, modeled on a逐页演讲稿 rather than a loose outline;
 - create `slide-blueprint.json` following `references/content-to-deck.md`;
 - split source pages that contain multiple narrative jobs;
 - merge only genuinely redundant beats;
 - run `node <skill>/scripts/validate_content_plan.mjs <workspace>/slide-blueprint.json`;
 - run `node <skill>/scripts/render_page_content.mjs <workspace>/slide-blueprint.json <workspace>/page-content.txt --check`;
-- resolve every unmapped required unit and invalid source reference before authoring.
+- resolve every unmapped required unit and invalid source reference;
+- present the page content and stop until the user approves pagination;
+- ask for and confirm the template or style;
+- create three proof slides and stop until the user approves the visual system;
+- run the approval-ledger validator before full authoring.
 
 For polish-in-place mode, retain the approved page order and use a lighter slide audit instead of re-outlining.
 

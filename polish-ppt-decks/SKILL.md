@@ -1,6 +1,6 @@
 ---
 name: polish-ppt-decks
-description: Build, restructure, refine, beautify, or finish editable PowerPoint decks from user-uploaded PPT/PPTX content, documents, notes, or templates. Use when Codex must extract supplied content, divide it into a coherent slide-by-slide narrative, generate a new presentation, preserve a user-provided template, redesign existing slides, create illustrations, add presenter notes, or run rendering, overflow, content-coverage, template-fidelity, and editability QA. Treat reference decks and screenshots as style-only by default; never import their wording, data, examples, story, or slide sequence unless the user explicitly authorizes content reuse.
+description: Build, restructure, refine, beautify, or finish editable PowerPoint decks from user-uploaded PPT/PPTX content, documents, notes, or templates through staged user approvals. Use when Codex must draft and confirm a talk manuscript, divide approved content into a page-by-page script, confirm the pagination and template or style choice, generate a representative style proof, create the final presentation, preserve a user-provided template, add illustrations and presenter notes, or run content and visual QA. Treat reference decks and screenshots as style-only by default; never import their wording, data, examples, story, or slide sequence unless the user explicitly authorizes content reuse.
 ---
 
 # Build and Polish PPT Decks
@@ -22,6 +22,21 @@ Choose exactly one primary mode before authoring:
 - **Polish in place**: the slide sequence and content are already approved; improve design, visuals, notes, and consistency without changing the narrative.
 
 The same PPTX may be both a content source and a template source when the user wants to keep its branding. Record both roles explicitly rather than treating the rendered pages as finished slide content.
+
+## Mandatory approval gates
+
+For build-from-content and restructure mode, use one stage per user turn. Present the current artifact, ask for confirmation, and stop. Do not begin the next stage in the same turn.
+
+1. **Scope brief**: show the authorized sources, audience, objective, duration, language, must-keep content, and exclusions. Wait for confirmation.
+2. **Talk manuscript**: draft `talk-script.txt` as a coherent presentation narrative without page numbers or layout decisions. Wait for content confirmation.
+3. **Page content**: only after the talk manuscript is approved, create `page-content.txt` and `slide-blueprint.json`. Show the proposed page count, titles, visible copy, talk track, transitions, and source mapping. Wait for pagination confirmation.
+4. **Template or style**: only after page content is approved, ask whether to use a fixed template. If yes, wait for the user to identify or upload it and confirm the rendered template. If no, present a concise style direction and wait for confirmation.
+5. **Style proof**: create only a small representative proof—normally the cover, one standard content slide, and one complex slide. Wait for visual confirmation.
+6. **Full deck**: generate the complete PPTX only after all prior gates are approved.
+
+Do not treat silence, tool completion, or a previously approved different artifact as approval. Replies such as “确认”, “没问题”, “继续”, or “按这个来” approve only the most recently presented gate. New feedback reopens that gate. Skip gates only when the user explicitly requests a one-shot workflow without confirmations.
+
+Record gate state in `approval-ledger.txt` and run `scripts/validate_approval_ledger.mjs` before entering a gated stage. Read [approval-gates.md](references/approval-gates.md) for the exact protocol.
 
 ## Mandatory visual contract
 
@@ -55,26 +70,29 @@ Default every older PPT, screenshot, example page, and inspiration deck to **sty
 For **Build from content** and **Restructure an existing deck**, do not start with slide drawing.
 
 1. Extract all authorized text, speaker notes, tables, chart labels, image captions, and source-slide references into `content-inventory.json`.
-2. Write a concise communication brief: audience, deck job, desired outcome, central takeaway, duration, language, and constraints.
-3. Remove exact duplication, but do not silently discard required facts, examples, evidence, caveats, or conclusions.
-4. Draft `page-content.txt`, a human-readable page-by-page content script similar to the user's supplied逐页演讲稿. Each page must state the page number, title, suggested duration, page job, visible slide copy, talk track, transition or ending, visual brief, and source-unit IDs.
-5. Encode the same page content in `slide-blueprint.json` using the schema in [content-to-deck.md](references/content-to-deck.md). The readable script and machine blueprint must describe the same pages in the same order.
-6. Split dense source pages when they contain multiple claims. Merge source pages only when they repeat the same narrative beat. Do not preserve the source page count mechanically.
-7. Keep every factual claim traceable to a supplied content unit or an explicitly approved external source. Never invent metrics, cases, quotes, customers, outcomes, or technical facts.
-8. Run `scripts/validate_content_plan.mjs <slide-blueprint.json>`, then run `scripts/render_page_content.mjs <slide-blueprint.json> <page-content.txt> --check`. Resolve every missing required content unit, unknown source ID, duplicate slide number, empty claim, missing talk track, and mismatch between the readable script and blueprint.
-9. Generate editable slides and presenter notes only from the validated page content. Re-run both checks after any structural or wording revision.
+2. Write and confirm `communication-brief.txt`.
+3. Draft and confirm `talk-script.txt` before deciding page count.
+4. Remove exact duplication, but do not silently discard required facts, examples, evidence, caveats, or conclusions.
+5. After talk-script approval, draft `page-content.txt`, a human-readable page-by-page content script similar to the user's supplied逐页演讲稿.
+6. Encode the same page content in `slide-blueprint.json`. Split dense source pages and merge only repeated narrative beats.
+7. Run the content validators, present the proposed pagination, and wait for user confirmation.
+8. Ask for and confirm the template or style, then create and confirm a three-slide style proof.
+9. Generate the full editable deck only after `approval-ledger.txt` passes all required gates.
 
 Read [content-to-deck.md](references/content-to-deck.md) whenever content must be divided, reordered, condensed, expanded, or converted into a new presentation.
 
 ## Core workflow
 
 1. Classify every input as content source, template source, or style-only reference, then choose the operating mode.
-2. Inspect every authorized content source. Render all supplied PPTX files and extract their editable content and speaker notes.
-3. For build or restructure mode, create `content-inventory.json`, `page-content.txt`, and `slide-blueprint.json`, then validate that the readable page script and blueprint match. For polish-in-place mode, preserve the approved page sequence.
-4. Define the communication job and identify the required slide families: opening, context, claims, evidence, comparisons, processes, metrics, cases, conclusion, discussion, or closing.
-5. Before authoring slides, write `<task-workspace>/visual-plan.md`. Map every planned output slide—not every source page—to its visual job, selected treatment, and asset status. Illustration coverage is determined by eligible page type, not by a fixed quota.
-6. Build a template frame map and starter deck using the presentations skill's template-following scripts. When the output needs more slides, duplicate validated source frames or layouts; do not flatten source slides.
-7. Initialize a task workspace and configure the presentations runtime:
+2. Inspect every authorized content source and create the scope brief. Present it and stop for approval.
+3. Draft the complete talk manuscript. Present it and stop for approval.
+4. Create and validate `content-inventory.json`, `page-content.txt`, and `slide-blueprint.json`. Present the pagination and stop for approval.
+5. Ask for a fixed template or style direction. Inspect the selected template or describe the selected direction, then stop for approval.
+6. Create three representative style-proof slides, render them, and stop for approval.
+7. Before full authoring, run `scripts/validate_approval_ledger.mjs <approval-ledger.txt> --require scope-brief,talk-script,page-content,template-style,style-proof`.
+8. Define the communication job and required slide families, then write `<task-workspace>/visual-plan.md`.
+9. Build the template frame map and starter deck.
+10. Initialize the task workspace and configure the presentations runtime:
 
    ```bash
    node scripts/init_deck_workspace.mjs \
@@ -85,7 +103,7 @@ Read [content-to-deck.md](references/content-to-deck.md) whenever content must b
      --workspace <task-workspace>
    ```
 
-8. Write a deck-specific `transform.mjs` in the task workspace. Export one default async function:
+11. Write a deck-specific `transform.mjs` in the task workspace. Export one default async function:
 
    ```js
    export default async function transform({ presentation, workspace, helpers }) {
@@ -95,7 +113,7 @@ Read [content-to-deck.md](references/content-to-deck.md) whenever content must b
    }
    ```
 
-9. Run the transform engine:
+12. Run the transform engine:
 
    ```bash
    node <task-workspace>/pipeline/run_transform.mjs \
@@ -105,10 +123,8 @@ Read [content-to-deck.md](references/content-to-deck.md) whenever content must b
      --out <final.pptx>
    ```
 
-10. Render the final PPTX with LibreOffice, inspect every slide at full size, run content-coverage, overflow, template fidelity, visual-coverage, and editability checks.
-11. Run `<task-workspace>/pipeline/validate_visual_details.mjs <task-workspace>/final-layout` to reject wrapped two-digit badges, undersized compact-token text boxes, repeated peer-card groups that are visibly off-center, illustrated comparison cards whose visual content is too sparse, and malformed hub diagrams.
-12. For asset sheets, never slice fixed grid cells directly. Run `scripts/recrop_illustration_sheets.mjs` so complete connected subjects are recovered across nominal cell boundaries, then run `scripts/validate_illustration_assets.mjs <tile-dir> --require-recrop-report`. Reject detached fragments, suspicious flat clipping edges, missing crop provenance, or incomplete silhouettes. If only detached fragments need cleanup, write a new asset directory with `--output-dir`; missing subject pixels require recropping or regeneration.
-13. Iterate until all content mapping, narrative, hierarchy, wrapping, crop, contrast, connector, footer, logo, placeholder, notes, visual-coverage, and editability issues are resolved.
+13. Render and inspect every final slide; run all content, overflow, fidelity, visual, and editability checks.
+14. Iterate until all content mapping, narrative, hierarchy, wrapping, crop, contrast, connector, footer, logo, placeholder, notes, visual-coverage, and editability issues are resolved.
 
 Read [workflow.md](references/workflow.md) for the full command sequence.
 Read [visual-coverage.md](references/visual-coverage.md) before generating or selecting visual assets.
@@ -176,6 +192,7 @@ Read [transform-patterns.md](references/transform-patterns.md) for reusable auth
 Do not deliver until:
 
 - Every slide renders.
+- All mandatory approval gates are recorded as approved; no approval belongs to an older superseded artifact.
 - In build or restructure mode, `slide-blueprint.json` passes `scripts/validate_content_plan.mjs`, and every required source unit appears on at least one output slide.
 - `page-content.txt` exists before slide authoring and passes `scripts/render_page_content.mjs <slide-blueprint.json> <page-content.txt> --check`.
 - The page script includes visible copy, talk track, transition, visual brief, and provenance for every planned slide; the PPT and presenter notes follow it.

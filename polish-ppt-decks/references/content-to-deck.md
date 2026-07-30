@@ -54,7 +54,13 @@ Choose an arc that fits the job:
 
 An agenda is not the narrative. Each slide should answer a question raised by the prior slide or create the need for the next.
 
-## 4. Divide content into slides
+## 4. Draft and confirm the talk manuscript
+
+Write `talk-script.txt` before deciding slide count. It should contain the complete spoken narrative in sections, including the opening question, main claims, evidence, cases, conclusion, and discussion prompt.
+
+Do not add page numbers, layouts, illustration prompts, or slide titles yet. Present the manuscript to the user and wait for explicit approval. Record `talk-script=approved` before continuing.
+
+## 5. Divide approved content into slides
 
 Use one primary claim per slide.
 
@@ -68,7 +74,7 @@ Use one primary claim per slide.
 
 Do not invent bridge claims. When a transition requires unsupported information, use a neutral transition or ask the user for the missing content.
 
-## 5. Draft the human-readable page content
+## 6. Draft and confirm the human-readable page content
 
 Before PowerPoint authoring, produce `page-content.txt`. It is the reviewable content contract and should resemble a well-structured逐页演讲稿:
 
@@ -99,7 +105,9 @@ unit-001, unit-004
 
 This file is not the PPT itself. It separates content decisions from layout decisions and lets the user review the story before slide generation. Use `[结束]` instead of `[转场]` on the last page.
 
-## 6. Create `slide-blueprint.json`
+Present the complete page content and title list, then wait for explicit approval. Do not inspect or select the production template until `page-content=approved`.
+
+## 7. Create `slide-blueprint.json`
 
 ```json
 {
@@ -157,7 +165,7 @@ Required fields:
 
 Cover, divider, Q&A, and thank-you pages may have no source units. Content, evidence, process, comparison, metric, case, and conclusion pages normally require at least one mapped source unit.
 
-## 7. Render and validate the page content
+## 8. Render and validate the page content
 
 Generate the readable script from the blueprint:
 
@@ -178,7 +186,7 @@ node <skill>/scripts/render_page_content.mjs \
 
 Do not author the PPT while these files disagree.
 
-## 8. Validate before and after authoring
+## 9. Validate before and after authoring
 
 Run:
 
@@ -198,7 +206,17 @@ The validator rejects:
 
 After the user changes the story, update the blueprint first, re-run validation, and only then regenerate slides.
 
-## 9. Author from the approved page content
+## 10. Confirm template and style proof
+
+After page-content approval:
+
+1. ask whether the user requires a fixed template;
+2. confirm the selected template or custom style direction;
+3. render only three representative proof slides;
+4. wait for visual approval;
+5. validate the approval ledger before generating the full deck.
+
+## 11. Author from the approved page content
 
 - Create editable audience-facing text; do not paste planning fields onto the slide.
 - Treat `claim` as the writing target, not necessarily the exact title.
