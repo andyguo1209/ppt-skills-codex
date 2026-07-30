@@ -10,7 +10,7 @@
 ## 能做什么
 
 - 美化现有 `.pptx`，保留原始模板和母版结构
-- 重构封面、卡片、流程、指标、案例和收尾页
+- 重构正式文字型封面、卡片、流程、指标、案例和收尾页
 - 统一颜色、层级、留白、图标和图片风格
 - 调用 ImageGen 生成封面主视觉或页面插画
 - 保留文字和简单图形的可编辑性
@@ -31,6 +31,14 @@
 6. **所有语义文字和结构必须原生可编辑**
 7. **每次修改都经过完整渲染和 QA**
 
+## 封面原则
+
+- 正常大会封面默认只保留会议标识、标题、副标题、演讲者姓名和职位。
+- 模板背景本身已有足够视觉识别时，不强制添加插图。
+- 封面禁止使用关系图、飞轮、流程图、能力模型、内容卡片组或带文字节点的解释图。
+- 确需主视觉时，图片必须从属于标题，不能与主题和讲者信息争夺焦点。
+- 用户先要求全页插图、后明确要求文字型封面时，以后者为准，并在视觉计划中记录例外。
+
 ## 仓库结构
 
 ```text
@@ -43,12 +51,16 @@
     ├── scripts/
     │   ├── helpers.mjs
     │   ├── init_deck_workspace.mjs
+    │   ├── recrop_illustration_sheets.mjs
     │   ├── run_transform.mjs
+    │   ├── validate_editability.mjs
+    │   ├── validate_illustration_assets.mjs
     │   ├── validate_prompter.mjs
-    │   └── validate_editability.mjs
+    │   └── validate_visual_details.mjs
     └── references/
         ├── design-rules.md
         ├── transform-patterns.md
+        ├── visual-coverage.md
         └── workflow.md
 ```
 

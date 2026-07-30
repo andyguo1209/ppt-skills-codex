@@ -13,8 +13,11 @@
 - Use one left or centered reading axis.
 - Limit the hierarchy to conference label, title, subtitle, and speaker identity.
 - Avoid combining a keyword rail, accent line, speaker badge, bilingual label, name, and role in the same region.
-- Use one large hero visual. The hero should express the whole system, not look like disconnected clip art.
+- Treat the conventional conference cover as text-first. When the inherited background already carries the visual identity, use no added illustration.
+- Do not turn the cover into a concept-explanation slide. Never add a hub, flywheel, process, capability model, relationship network, labeled orbit, card group, or diagram with editable content labels.
+- Use a hero visual only when the user or reference clearly calls for one. Keep it thematic, visually subordinate to the title, free of labels, and unrelated to any content-slide diagram grammar.
 - Prefer a single-line title when it fits cleanly. If a line break is necessary, balance line lengths deliberately.
+- Keep the speaker block simple: name and role on two lines or one concise line. Do not wrap it in a badge, rail, panel, or decorative identity component unless the source template already does so.
 
 ## Cards
 
@@ -49,6 +52,8 @@
 - Inspect every hub illustration at full size and recrop, clean, or replace isolated tile fragments before delivery.
 - Never cover a bitmap edge with a same-color shape to hide crop residue. The cover can amputate the subject after scaling or renderer differences.
 - Preserve transparent padding around the complete silhouette and verify the topmost, bottommost, leftmost, and rightmost meaningful pixels remain visible after PowerPoint rendering.
+- When a generated asset sheet uses a visible or implied grid, do not crop at the grid boundary. A globe, antenna, arrow, halo, or platform may cross into the neighboring cell. Recover each complete connected subject from the full transparent sheet, normalize it with at least 24 px of transparent padding, and require `recrop-report.json`.
+- Reject a tile whose main subject begins or ends in an unexplained long flat edge, even when later normalization added transparent padding around that already-amputated bitmap. Transparent margin is not evidence that the subject itself is complete.
 
 ## Cycles and flywheels
 
@@ -79,6 +84,7 @@
 ## Common failure modes
 
 - Too many visual levels in one column.
+- A cover that looks like a hub, process, framework, or content page instead of a formal title-and-speaker first screen.
 - Generated images that use a different material or lighting style.
 - Low-contrast body copy on dark cards.
 - Repeated brown/gold fills that overpower the blue template.
@@ -95,3 +101,4 @@
 - Wide comparison cards with a tiny centered illustration and a narrow vertical text stack, leaving most of both sides visually unused.
 - Hub diagrams built from rectangular cards sitting on two axis-spanning lines instead of individually connected radial nodes.
 - Center and outer nodes competing for the same space, or generated tile fragments floating outside the intended illustration.
+- Grid-sliced illustrations with a missing dome, globe cap, antenna, arrow, platform edge, or other amputated main-subject pixels.

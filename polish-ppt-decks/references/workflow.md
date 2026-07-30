@@ -43,6 +43,8 @@ Do not count generic badges, single letters in circles, or decorative glow as il
 
 If the user explicitly requests illustrations on all pages, remove all page-type exceptions. Include cover, metrics, hubs, cycles, relationship diagrams, Q&A, and thank-you pages, then verify every slide contains at least one topic-specific illustration.
 
+If the user later requests a normal text-only title page, treat that as an explicit override: remove the cover illustration, retain only the conference label, title, subtitle, speaker name, and role on one reading axis, and record the exception in `visual-plan.md`. Never replace the removed hero with a hub, relationship diagram, process, or capability model.
+
 ## 5. Author
 
 Create a task-specific `transform.mjs`. Use inherited shapes and placeholders first. Add a new primitive only when the map explicitly permits it in a bounded zone.
@@ -65,14 +67,28 @@ node <workspace>/pipeline/run_transform.mjs \
 - Generate one coherent object per role, stage, capability, or concept.
 - Match the deck's palette and lighting.
 - Match the reference's visual scale: a card-level mini-scene reference requires card-level mini-scenes, not one full-slide hero image.
-- For related three-to-six-item cards or processes, generate a coherent asset sheet and crop it into separate transparent PNGs.
+- For related three-to-six-item cards or processes, generate a coherent asset sheet and segment it into separate transparent PNGs. Never use fixed grid cells as final crop boundaries because a generated subject may extend across them.
 - Request no text, labels, legends, numbers, logo, or watermark.
 - Use generated images only as backgrounds, photos, textures, or standalone illustrations.
 - Add every semantic label as a separate editable slide object.
 - For a cutout, use chroma-key generation and the imagegen skill's removal helper.
 - Copy final project-bound images into `<workspace>/assets`.
 - Record prompts and selected output paths in `prompt-record.txt`.
-- For cropped asset sheets, run `node <skill>/scripts/validate_illustration_assets.mjs <asset-dir>`. If it reports detached edge fragments, generate a non-destructive cleaned set with `--output-dir <clean-asset-dir>` and reference that set from the transform.
+- For cropped asset sheets, run:
+
+  ```bash
+  node <skill>/scripts/recrop_illustration_sheets.mjs \
+    <sheet-dir> <tile-dir> \
+    --sheet-rows "a:4,b:4,c:5" \
+    --columns 6 \
+    --sheet-prefix coverage-sheet-
+
+  node <skill>/scripts/validate_illustration_assets.mjs \
+    <tile-dir> \
+    --require-recrop-report
+  ```
+
+  The recropper identifies one main connected subject per nominal cell, assigns nearby detached details to the nearest subject, and writes `recrop-report.json`. If validation reports only detached edge fragments, create a non-destructive cleaned set with `--output-dir`. If the main subject is cut flat or missing pixels, recrop from the full sheet or regenerate it; cleanup masks cannot restore missing content.
 
 ## 7. Notes
 
@@ -95,7 +111,7 @@ Run:
 5. `node <workspace>/pipeline/validate_visual_details.mjs <workspace>/final-layout`;
 6. full-size visual review of every changed slide;
 
-The visual-details gate must fail when a cleanup mask overlaps more than 2% of a semantic illustration. Never approve a same-color rectangle placed over an image edge; repair the bitmap or replace the asset.
+The visual-details gate must fail when a cleanup mask overlaps more than 2% of a semantic illustration. Never approve a same-color rectangle placed over an image edge; repair the bitmap or replace the asset. Sheet-derived tiles must also carry a passing connected-component recrop report so fixed-cell slicing cannot silently amputate a subject.
 7. deck-level montage review;
 8. compare the final montage against `visual-plan.md` for coverage and barren sequences.
 

@@ -8,6 +8,7 @@ export async function readBytes(filePath) {
     bytes.byteOffset + bytes.byteLength,
   );
 }
+
 export function findShape(slide, name) {
   const shape = slide.shapes.items.find((item) => item.name === name);
   if (!shape) throw new Error(`Missing shape: ${name}`);

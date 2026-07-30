@@ -26,6 +26,8 @@ When the user says “all slides”, “every slide”, “所有页面”, or a
 - native circles, arrows, connectors, charts, and diagrams remain editable structure, but they do not count as permission to skip illustration;
 - validate the final PPTX by counting slide images and visually reviewing every slide, not by checking only a montage sample.
 
+If the user later explicitly asks for a conventional text-only cover, honor that request, remove the cover illustration, and record the cover as an intentional native-background visual alternative in `visual-plan.md`. Do not compensate by adding a content diagram to the cover.
+
 ## Coverage targets
 
 For a normal visual conference deck:
