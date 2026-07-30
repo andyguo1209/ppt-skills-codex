@@ -198,6 +198,110 @@ function intersectionArea(a, b) {
   return Math.max(0, right - left) * Math.max(0, bottom - top);
 }
 
+function intersectionBox(a, b) {
+  const left = Math.max(a[0], b[0]);
+  const top = Math.max(a[1], b[1]);
+  const right = Math.min(a[0] + a[2], b[0] + b[2]);
+  const bottom = Math.min(a[1] + a[3], b[1] + b[3]);
+  return [
+    left,
+    top,
+    Math.max(0, right - left),
+    Math.max(0, bottom - top),
+  ];
+}
+
+function estimatedVisualWidth(text, fontPx) {
+  let units = 0;
+  for (const char of text) {
+    if (/\s/.test(char)) units += 0.34;
+    else if (/[\u2E80-\u9FFF\uF900-\uFAFF]/u.test(char)) units += 1;
+    else if (/[A-Z0-9%≈]/.test(char)) units += 0.68;
+    else if (/[a-z]/.test(char)) units += 0.56;
+    else units += 0.45;
+  }
+  return units * fontPx;
+}
+
+function approximateTextInkBox(element) {
+  const box = Array.isArray(element.bbox) ? element.bbox.map(Number) : [];
+  if (box.length !== 4 || box.some((value) => !Number.isFinite(value))) return undefined;
+  const text = String(element.text ?? "").trim();
+  if (!text) return undefined;
+
+  const lines = element.textLayout?.lines?.map((line) => String(line.text ?? "")) ?? [text];
+  const runSizes = (element.paragraphs ?? [])
+    .flatMap((paragraph) => paragraph.runs ?? [])
+    .map((run) => Number(run.fontSize))
+    .filter(Number.isFinite);
+  const fontPx =
+    (runSizes.length ? Math.max(...runSizes) : Number(element.resolvedFontSize ?? 14)) * 4 / 3;
+  const inkWidth = Math.min(
+    box[2],
+    Math.max(...lines.map((line) => estimatedVisualWidth(line, fontPx))),
+  );
+  const inkHeight = Math.min(
+    box[3],
+    Math.max(fontPx * 1.08, box[3] / Math.max(1, lines.length)),
+  );
+  const alignment =
+    element.paragraphs?.[0]?.resolvedTextStyle?.alignment ??
+    element.resolvedTextStyle?.alignment ??
+    "left";
+
+  let left = box[0];
+  if (alignment === "center") left = box[0] + (box[2] - inkWidth) / 2;
+  if (alignment === "right") left = box[0] + box[2] - inkWidth;
+  const top = box[1] + (box[3] - inkHeight) / 2;
+  return [left, top, inkWidth, inkHeight];
+}
+
+function inspectIllustrationTextOverlap(layout, slideNumber, filePath) {
+  const elements = layout.elements ?? [];
+  const illustrations = elements.filter((element) =>
+    /(?:illustration|visual|hero)/i.test(String(element.name ?? "")) &&
+    /image/i.test(String(element.kind ?? element.type ?? element.geometry ?? "")),
+  );
+  const compactReadableTexts = elements.filter((element) => {
+    const text = String(element.text ?? "");
+    const compactText = text.replace(/\s+/g, "");
+    return (
+      compactText.length > 0 &&
+      compactText.length <= 16 &&
+      !text.includes("\n") &&
+      /shape|text/i.test(String(element.kind ?? element.type ?? element.geometry ?? ""))
+    );
+  });
+  const issues = [];
+
+  for (const illustration of illustrations) {
+    const imageBox = Array.isArray(illustration.bbox) ? illustration.bbox.map(Number) : [];
+    if (imageBox.length !== 4 || imageBox.some((value) => !Number.isFinite(value))) continue;
+    for (const textElement of compactReadableTexts) {
+      if (Number(illustration.order ?? 0) <= Number(textElement.order ?? 0)) continue;
+      const inkBox = approximateTextInkBox(textElement);
+      if (!inkBox) continue;
+      const overlap = intersectionBox(imageBox, inkBox);
+      const horizontalCoverage = overlap[2] / Math.max(1, inkBox[2]);
+      const verticalCoverage = overlap[3] / Math.max(1, inkBox[3]);
+      if (horizontalCoverage < 0.4 || verticalCoverage < 0.7) continue;
+      issues.push({
+        slide: slideNumber,
+        id: "illustration-covers-readable-text",
+        illustration: String(illustration.name ?? ""),
+        text: String(textElement.text ?? ""),
+        imageBox,
+        inkBox,
+        horizontalCoverage,
+        verticalCoverage,
+        file: filePath,
+        message: `Illustration "${String(illustration.name ?? "")}" covers readable text "${String(textElement.text ?? "")}". Move or resize the illustration; do not hide the text.`,
+      });
+    }
+  }
+  return issues;
+}
+
 function inspectIllustrationOcclusion(layout, slideNumber, filePath) {
   const elements = layout.elements ?? [];
   const illustrations = elements.filter((element) =>
@@ -326,6 +430,7 @@ for (const filePath of layoutFiles) {
   }
   issues.push(...inspectRepeatedGroups(layout, slideNumber, filePath));
   issues.push(...inspectComparisonDensity(layout, slideNumber, filePath));
+  issues.push(...inspectIllustrationTextOverlap(layout, slideNumber, filePath));
   issues.push(...inspectIllustrationOcclusion(layout, slideNumber, filePath));
   issues.push(...inspectHubGeometry(layout, slideNumber, filePath));
 }
