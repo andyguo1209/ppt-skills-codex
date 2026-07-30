@@ -1,0 +1,4 @@
+interface:
+  display_name: "PPT Visual Polisher"
+  short_description: "Refine template-based PPT decks with visuals, notes, and QA"
+  default_prompt: "Use $polish-ppt-decks to beautify this PPT while preserving its template and adding concise presenter notes."

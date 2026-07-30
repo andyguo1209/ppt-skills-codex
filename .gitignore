@@ -1,0 +1,25 @@
+.DS_Store
+node_modules/
+
+# Task workspaces and generated presentation artifacts
+.work_*/
+final-render/
+final-layout/
+qa/
+assets/generated/
+
+# User or customer presentations
+source.pptx
+template-starter.pptx
+*.ppt
+*.pptx
+*.pptx.inspect.ndjson
+
+# Rendered previews
+*.png
+*.webp
+
+# Local logs and prompt/source records
+prompt-record.txt
+source-notes.txt
+deviation-log.txt
