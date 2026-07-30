@@ -2,7 +2,7 @@
 
 一套面向 Codex 的可编辑 PowerPoint 生成与视觉精修 Skill。
 
-它不只是美化工具。用户可以上传内容型 PPT、讲稿、提纲或混合资料，Skill 会先提取和盘点内容，再设计叙事、切分逐页主题、生成可编辑 PPT；如果用户上传的是已有成品稿，也可以保留模板、Logo 和页脚进行视觉精修。
+它不只是美化工具。用户可以上传内容型 PPT、讲稿、提纲或混合资料，Skill 会先提取和盘点内容，生成一份可审阅的逐页内容稿，再依据这份内容稿生成可编辑 PPT；如果用户上传的是已有成品稿，也可以保留模板、Logo 和页脚进行视觉精修。
 
 > **重要默认规则：参考 PPT 和截图只用于学习风格，不用于提取内容。**
 > 未经用户明确授权，不复制参考稿的文字、数据、案例、图表、故事线或页面顺序。最终标题、正文、卡片、流程、图表和页码必须是 PowerPoint 原生可编辑对象，不接受整页截图或整页生图。
@@ -11,6 +11,7 @@
 
 - 从用户上传的 PPT、文稿、提纲和备注中提取授权内容
 - 把内容整理为叙事主线并切分成逐页蓝图
+- 先生成包含页码、标题、时长、屏幕文案、现场讲稿、转场和视觉建议的逐页内容稿
 - 自动检查必讲内容是否遗漏、重复或失去来源映射
 - 根据内容和用户模板生成一套新的可编辑 PPT
 - 美化现有 `.pptx`，保留原始模板和母版结构
@@ -57,6 +58,7 @@
     │   ├── helpers.mjs
     │   ├── init_deck_workspace.mjs
     │   ├── recrop_illustration_sheets.mjs
+    │   ├── render_page_content.mjs
     │   ├── run_transform.mjs
     │   ├── validate_content_plan.mjs
     │   ├── validate_editability.mjs
@@ -103,7 +105,7 @@ git push -u origin main
 
 ```text
 $polish-ppt-decks 根据我上传的内容稿生成一套PPT。
-先梳理叙事并切分每页要讲的内容，再使用我提供的模板生成，
+先生成一份逐页内容稿供我审阅，再使用我提供的模板生成，
 所有标题、正文、图表和结构都要可编辑。
 ```
 
@@ -157,6 +159,8 @@ Skill 会引导 Codex执行以下流程：
     ↓
 设计叙事与逐页蓝图
     ↓
+生成逐页内容稿
+    ↓
 检查内容覆盖
     ↓
 建立模板映射
@@ -180,6 +184,7 @@ Skill 会引导 Codex执行以下流程：
 
 - `init_deck_workspace.mjs` 创建标准工作区
 - `validate_content_plan.mjs` 检查逐页蓝图、内容覆盖和来源映射
+- `render_page_content.mjs` 生成并核对可审阅的逐页内容稿
 - `run_transform.mjs` 运行当前 PPT 的页面修改逻辑
 - `helpers.mjs` 提供图片、形状、备注和 QA 辅助函数
 - `validate_prompter.mjs` 检查演讲者备注格式

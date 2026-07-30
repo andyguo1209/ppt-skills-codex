@@ -71,8 +71,18 @@ for (const [index, slide] of slides.entries()) {
     slideNumbers.add(slide.number);
   }
 
-  for (const field of ["kind", "title", "claim", "layoutIntent", "visualJob"]) {
+  for (const field of ["kind", "title", "claim", "speakerScript", "transition", "layoutIntent", "visualJob"]) {
     if (!isNonEmptyString(slide?.[field])) failures.push(`${slideLabel}: missing non-empty \`${field}\`.`);
+  }
+  if (!Number.isInteger(slide?.durationSeconds) || slide.durationSeconds < 1) {
+    failures.push(`${slideLabel}: \`durationSeconds\` must be a positive integer.`);
+  }
+  if (
+    !Array.isArray(slide?.onSlideContent) ||
+    slide.onSlideContent.length === 0 ||
+    slide.onSlideContent.some((item) => !isNonEmptyString(item))
+  ) {
+    failures.push(`${slideLabel}: \`onSlideContent\` must contain at least one non-empty string.`);
   }
 
   if (!Array.isArray(slide?.sourceUnitIds)) {

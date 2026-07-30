@@ -68,7 +68,38 @@ Use one primary claim per slide.
 
 Do not invent bridge claims. When a transition requires unsupported information, use a neutral transition or ask the user for the missing content.
 
-## 5. Create `slide-blueprint.json`
+## 5. Draft the human-readable page content
+
+Before PowerPoint authoring, produce `page-content.txt`. It is the reviewable content contract and should resemble a well-structured逐页演讲稿:
+
+```text
+## 02｜AI first compresses execution cost
+
+[建议时长：55秒]
+
+[本页任务]
+Explain that AI changes repeatable execution before it replaces whole roles.
+
+[屏幕内容]
+- AI first compresses execution cost
+- Repetition and clear acceptance criteria make work easier to automate
+
+[现场讲稿]
+AI does not replace a complete role in one step...
+
+[转场]
+So which human responsibilities become more valuable?
+
+[视觉建议]
+Editable comparison with two no-text technical illustrations.
+
+[来源映射]
+unit-001, unit-004
+```
+
+This file is not the PPT itself. It separates content decisions from layout decisions and lets the user review the story before slide generation. Use `[结束]` instead of `[转场]` on the last page.
+
+## 6. Create `slide-blueprint.json`
 
 ```json
 {
@@ -90,6 +121,10 @@ Do not invent bridge claims. When a transition requires unsupported information,
       "kind": "cover",
       "title": "From testing to quality systems",
       "claim": "Introduce the topic and speaker.",
+      "durationSeconds": 45,
+      "onSlideContent": ["From testing to quality systems", "Speaker name and role"],
+      "speakerScript": "Introduce the topic, speaker, and central question.",
+      "transition": "Before the answer, start with a judgment.",
       "sourceUnitIds": [],
       "layoutIntent": "minimal title and speaker",
       "visualJob": "native template background"
@@ -99,6 +134,13 @@ Do not invent bridge claims. When a transition requires unsupported information,
       "kind": "content",
       "title": "AI first compresses execution cost",
       "claim": "The immediate change is cheaper execution, not instant role replacement.",
+      "durationSeconds": 55,
+      "onSlideContent": [
+        "AI first compresses execution cost",
+        "Repeatable work with clear acceptance criteria is easier to automate"
+      ],
+      "speakerScript": "Explain the distinction between a role and the repeatable actions inside it.",
+      "transition": "So which human responsibilities become more valuable?",
       "sourceUnitIds": ["unit-001"],
       "layoutIntent": "claim plus evidence",
       "visualJob": "editable comparison with one illustration"
@@ -111,11 +153,32 @@ Required fields:
 
 - root: `version`, `communicationJob`, `contentUnits`, `slides`;
 - content unit: `id`, `source`, `kind`, `text`, `required`;
-- slide: `number`, `kind`, `title`, `claim`, `sourceUnitIds`, `layoutIntent`, `visualJob`.
+- slide: `number`, `kind`, `title`, `claim`, `durationSeconds`, `onSlideContent`, `speakerScript`, `transition`, `sourceUnitIds`, `layoutIntent`, `visualJob`.
 
 Cover, divider, Q&A, and thank-you pages may have no source units. Content, evidence, process, comparison, metric, case, and conclusion pages normally require at least one mapped source unit.
 
-## 6. Validate before and after authoring
+## 7. Render and validate the page content
+
+Generate the readable script from the blueprint:
+
+```bash
+node <skill>/scripts/render_page_content.mjs \
+  <workspace>/slide-blueprint.json \
+  <workspace>/page-content.txt
+```
+
+After the user or Codex revises either representation, synchronize them and verify:
+
+```bash
+node <skill>/scripts/render_page_content.mjs \
+  <workspace>/slide-blueprint.json \
+  <workspace>/page-content.txt \
+  --check
+```
+
+Do not author the PPT while these files disagree.
+
+## 8. Validate before and after authoring
 
 Run:
 
@@ -130,15 +193,17 @@ The validator rejects:
 - missing required content units;
 - unknown source-unit references;
 - content slides without source mappings;
-- slides without a title, primary claim, layout intent, or visual job;
+- slides without a title, primary claim, duration, visible copy, talk track, transition, layout intent, or visual job;
 - content units without source provenance or text.
 
 After the user changes the story, update the blueprint first, re-run validation, and only then regenerate slides.
 
-## 7. Author from the blueprint
+## 9. Author from the approved page content
 
 - Create editable audience-facing text; do not paste planning fields onto the slide.
 - Treat `claim` as the writing target, not necessarily the exact title.
+- Use `onSlideContent` as the allowed visible copy. Shorten only when meaning and source mapping remain intact.
+- Use `speakerScript` and `transition` to create presenter notes in the requested format.
 - Use `layoutIntent` and `visualJob` to choose the layout and assets.
 - Put detailed explanation into speaker notes when requested.
 - Preserve source traceability in working files and `[Sources]` note blocks when required by the presentations skill.

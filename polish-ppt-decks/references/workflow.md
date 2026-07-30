@@ -21,10 +21,12 @@ For build-from-content and restructure mode:
 
 - create `content-inventory.json` with stable IDs and source locators for all authorized claims, evidence, cases, caveats, notes, tables, and chart meanings;
 - create `communication-brief.txt`;
+- create the human-readable `page-content.txt`, modeled on a逐页演讲稿 rather than a loose outline;
 - create `slide-blueprint.json` following `references/content-to-deck.md`;
 - split source pages that contain multiple narrative jobs;
 - merge only genuinely redundant beats;
 - run `node <skill>/scripts/validate_content_plan.mjs <workspace>/slide-blueprint.json`;
+- run `node <skill>/scripts/render_page_content.mjs <workspace>/slide-blueprint.json <workspace>/page-content.txt --check`;
 - resolve every unmapped required unit and invalid source reference before authoring.
 
 For polish-in-place mode, retain the approved page order and use a lighter slide audit instead of re-outlining.
@@ -72,8 +74,9 @@ In build-from-content and restructure mode, author from the validated blueprint:
 - write visible copy for the audience, not the planning file;
 - keep one primary claim per slide;
 - preserve mapped evidence, qualifiers, and conclusions;
+- use the page script's现场讲稿 and转场 as the presenter-note source;
 - use the selected frame as a visual container, not as permission to restore the source page's old wording or structure;
-- update `slide-blueprint.json` first whenever slide order or content mapping changes.
+- update both `page-content.txt` and `slide-blueprint.json` whenever slide order, wording, or content mapping changes.
 
 Run:
 
@@ -129,16 +132,17 @@ node <workspace>/pipeline/validate_prompter.mjs <final.pptx>
 Run:
 
 1. `node <workspace>/pipeline/validate_content_plan.mjs <workspace>/slide-blueprint.json` for build and restructure mode;
-2. full-slide render;
-3. `slides_test.py`;
-4. `check_template_fidelity.mjs`;
-5. `node <workspace>/pipeline/validate_editability.mjs <final.pptx>`;
-6. `node <workspace>/pipeline/validate_visual_details.mjs <workspace>/final-layout`;
-7. full-size visual review of every changed slide;
+2. `node <workspace>/pipeline/render_page_content.mjs <workspace>/slide-blueprint.json <workspace>/page-content.txt --check`;
+3. full-slide render;
+4. `slides_test.py`;
+5. `check_template_fidelity.mjs`;
+6. `node <workspace>/pipeline/validate_editability.mjs <final.pptx>`;
+7. `node <workspace>/pipeline/validate_visual_details.mjs <workspace>/final-layout`;
+8. full-size visual review of every changed slide;
 
 The visual-details gate must fail when a cleanup mask overlaps more than 2% of a semantic illustration. Never approve a same-color rectangle placed over an image edge; repair the bitmap or replace the asset. Sheet-derived tiles must also carry a passing connected-component recrop report so fixed-cell slicing cannot silently amputate a subject.
-8. deck-level montage review;
-9. compare the final montage against `visual-plan.md` for coverage and barren sequences;
-10. compare the final slide sequence against `slide-blueprint.json` and confirm every required source unit remains represented.
+9. deck-level montage review;
+10. compare the final montage against `visual-plan.md` for coverage and barren sequences;
+11. compare the final slide sequence and presenter notes against `page-content.txt` and `slide-blueprint.json`.
 
 Fix text wrapping before reducing font size. Treat compact-token wrapping, sub-48 px two-digit badge text boxes, repeated peer groups offset more than 24 px from the slide center, illustrated comparison cards whose illustration occupies less than 10% of the panel area, hub links that are not native one-to-one connectors, and hub nodes entering the 16 px center safe zone as hard failures. Resolve every unexplained fidelity or editability issue before delivery. A slide that looks correct but is flattened into one image does not pass QA.

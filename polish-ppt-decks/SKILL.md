@@ -57,11 +57,12 @@ For **Build from content** and **Restructure an existing deck**, do not start wi
 1. Extract all authorized text, speaker notes, tables, chart labels, image captions, and source-slide references into `content-inventory.json`.
 2. Write a concise communication brief: audience, deck job, desired outcome, central takeaway, duration, language, and constraints.
 3. Remove exact duplication, but do not silently discard required facts, examples, evidence, caveats, or conclusions.
-4. Create `slide-blueprint.json` using the schema in [content-to-deck.md](references/content-to-deck.md). Each slide must have one narrative job, one primary claim, mapped source-unit IDs, a layout intent, and a visual job.
-5. Split dense source pages when they contain multiple claims. Merge source pages only when they repeat the same narrative beat. Do not preserve the source page count mechanically.
-6. Keep every factual claim traceable to a supplied content unit or an explicitly approved external source. Never invent metrics, cases, quotes, customers, outcomes, or technical facts.
-7. Run `scripts/validate_content_plan.mjs <slide-blueprint.json>` before authoring. Resolve every missing required content unit, unknown source ID, duplicate slide number, empty claim, and invalid source mapping.
-8. Use the validated blueprint to generate editable slides and presenter notes. Re-run the validator after any structural revision.
+4. Draft `page-content.txt`, a human-readable page-by-page content script similar to the user's supplied逐页演讲稿. Each page must state the page number, title, suggested duration, page job, visible slide copy, talk track, transition or ending, visual brief, and source-unit IDs.
+5. Encode the same page content in `slide-blueprint.json` using the schema in [content-to-deck.md](references/content-to-deck.md). The readable script and machine blueprint must describe the same pages in the same order.
+6. Split dense source pages when they contain multiple claims. Merge source pages only when they repeat the same narrative beat. Do not preserve the source page count mechanically.
+7. Keep every factual claim traceable to a supplied content unit or an explicitly approved external source. Never invent metrics, cases, quotes, customers, outcomes, or technical facts.
+8. Run `scripts/validate_content_plan.mjs <slide-blueprint.json>`, then run `scripts/render_page_content.mjs <slide-blueprint.json> <page-content.txt> --check`. Resolve every missing required content unit, unknown source ID, duplicate slide number, empty claim, missing talk track, and mismatch between the readable script and blueprint.
+9. Generate editable slides and presenter notes only from the validated page content. Re-run both checks after any structural or wording revision.
 
 Read [content-to-deck.md](references/content-to-deck.md) whenever content must be divided, reordered, condensed, expanded, or converted into a new presentation.
 
@@ -69,7 +70,7 @@ Read [content-to-deck.md](references/content-to-deck.md) whenever content must b
 
 1. Classify every input as content source, template source, or style-only reference, then choose the operating mode.
 2. Inspect every authorized content source. Render all supplied PPTX files and extract their editable content and speaker notes.
-3. For build or restructure mode, create and validate `content-inventory.json` and `slide-blueprint.json`. For polish-in-place mode, preserve the approved page sequence.
+3. For build or restructure mode, create `content-inventory.json`, `page-content.txt`, and `slide-blueprint.json`, then validate that the readable page script and blueprint match. For polish-in-place mode, preserve the approved page sequence.
 4. Define the communication job and identify the required slide families: opening, context, claims, evidence, comparisons, processes, metrics, cases, conclusion, discussion, or closing.
 5. Before authoring slides, write `<task-workspace>/visual-plan.md`. Map every planned output slide—not every source page—to its visual job, selected treatment, and asset status. Illustration coverage is determined by eligible page type, not by a fixed quota.
 6. Build a template frame map and starter deck using the presentations skill's template-following scripts. When the output needs more slides, duplicate validated source frames or layouts; do not flatten source slides.
@@ -176,6 +177,8 @@ Do not deliver until:
 
 - Every slide renders.
 - In build or restructure mode, `slide-blueprint.json` passes `scripts/validate_content_plan.mjs`, and every required source unit appears on at least one output slide.
+- `page-content.txt` exists before slide authoring and passes `scripts/render_page_content.mjs <slide-blueprint.json> <page-content.txt> --check`.
+- The page script includes visible copy, talk track, transition, visual brief, and provenance for every planned slide; the PPT and presenter notes follow it.
 - The final slide order follows the validated narrative arc; source-page order is not preserved merely for convenience.
 - Every content slide has one explicit primary claim and advances the story.
 - `<task-workspace>/visual-plan.md` exists and the delivered deck follows it, or deviations are recorded.

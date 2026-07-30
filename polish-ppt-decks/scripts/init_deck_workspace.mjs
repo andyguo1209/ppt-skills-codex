@@ -25,6 +25,7 @@ for (const dir of ["assets", "final-render", "final-layout", "qa", "pipeline"]) 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 for (const fileName of [
   "helpers.mjs",
+  "render_page_content.mjs",
   "run_transform.mjs",
   "validate_content_plan.mjs",
   "validate_prompter.mjs",
