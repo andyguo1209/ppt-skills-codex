@@ -58,13 +58,13 @@
 ## Cycles and flywheels
 
 - Use a continuous circular or elliptical orbit so the loop is visible immediately.
-- Place four to six circular stage nodes on the orbit; each stage keeps its own editable number, label, and topic-specific illustration.
+- Place four to six circular stage nodes on the orbit; each stage keeps its own editable number and short label. Add a stage illustration only when the node remains readable at presentation scale.
 - Use an illustrated central engine for the accumulated capability, memory, immunity, or platform core.
 - Highlight the decisive transition with gold while the remaining stages use cyan.
 - Keep the orbit and all labels as native editable PowerPoint objects.
 - Reserve a clear central safe zone: the top and bottom stage nodes must not overlap the center engine or its label.
-- Keep neighboring stage circles visually separated; use a consistent image, number, and label baseline inside every node.
-- Draw the orbit behind the nodes and remove floating accent lines that do not communicate direction or state.
+- Keep neighboring stage circles visually separated. Do not place paragraph-length explanations inside ring nodes; merge stages or move detail into a supporting line when necessary.
+- Draw the orbit behind opaque nodes so it never crosses text. Remove floating accent lines that do not communicate direction or state.
 - Do not arrange rectangular cards around a center and call it a flywheel.
 - Do not connect cycle nodes with unrelated horizontal or vertical lines that fail to show a continuous loop.
 

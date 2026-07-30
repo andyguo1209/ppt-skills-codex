@@ -145,12 +145,12 @@ Read [visual-coverage.md](references/visual-coverage.md) before generating or se
 - When cards represent distinct roles, stages, capabilities, systems, or business concepts, use `number → title → unique illustration → one-line meaning` unless the user's reference clearly calls for another structure.
 - Match the user's reference at the correct visual scale. If the reference uses compact card-level technical scenes, do not substitute a single cinematic hero render or a flat character scene.
 - Do not allow more than three consecutive content slides without a meaningful visual anchor unless the narrative is intentionally text-first.
-- Generate coherent asset sets rather than isolated images: one unique mini-scene per card or process stage, consistent camera angle, lighting, palette, material, and transparent background.
+- When multiple cards or stages genuinely benefit from illustration, generate a coherent asset set rather than isolated images: consistent camera angle, lighting, palette, material, and transparent background. Do not force a mini-scene into every item.
 - Asset sheets are allowed as a generation technique, but crop each cell into a separate transparent PNG before inserting it into PowerPoint.
 - Treat grid lines as indexing hints, not hard crop boundaries. Generated subjects may cross those lines; segment the full transparent sheet by connected main subjects and preserve every meaningful top, bottom, left, and right pixel.
 - Never hide crop artifacts by placing same-color rectangles, masks, panels, or other shapes over an illustration. Clean or replace the source bitmap and preserve the complete visual silhouette.
 - Give process slides short stages, consistent connectors, and one emphasized terminal state.
-- For flywheels and closed loops, use a real circular or elliptical orbit with illustrated circular stage nodes and an illustrated center engine. Keep neighboring nodes separated, reserve a clear center safe zone, and place the orbit behind the nodes. Do not simulate a cycle with rectangular cards connected by unrelated straight lines.
+- For flywheels and closed loops, use a real circular or elliptical orbit with four to six concise stage nodes and a clear center engine. Stage-node illustrations are optional and should be omitted when they reduce label size or spacing. Keep neighboring nodes separated, reserve a clear center safe zone, place the orbit behind opaque nodes, and never let the orbit cross readable text.
 - For hubs and radial relationships, use evenly distributed peer nodes with one native center-to-node connector each. Keep at least 16 px around the center engine and reject axis-spanning crosshair lines.
 - Make metrics tell one story: hero result, supporting evidence, and implication.
 - Preserve editability for all semantic content and structures. Use raster images only for backgrounds, photos, textures, or standalone illustrations.
