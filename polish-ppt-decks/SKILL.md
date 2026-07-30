@@ -1,17 +1,27 @@
 ---
 name: polish-ppt-decks
-description: Refine, beautify, restructure, or finish existing PowerPoint decks while preserving a user-provided template and producing native editable slide content. Use for PPT/PPTX requests involving visual cleanup, card/process/metric redesign, AI-generated illustrations, cover and closing slides, presenter notes, template fidelity, slide rendering, overflow checks, editability checks, and repeatable code-driven presentation workflows. Treat reference decks and screenshots as style-only by default; never import their wording, data, examples, story, or slide sequence unless the user explicitly authorizes content reuse.
+description: Build, restructure, refine, beautify, or finish editable PowerPoint decks from user-uploaded PPT/PPTX content, documents, notes, or templates. Use when Codex must extract supplied content, divide it into a coherent slide-by-slide narrative, generate a new presentation, preserve a user-provided template, redesign existing slides, create illustrations, add presenter notes, or run rendering, overflow, content-coverage, template-fidelity, and editability QA. Treat reference decks and screenshots as style-only by default; never import their wording, data, examples, story, or slide sequence unless the user explicitly authorizes content reuse.
 ---
 
-# Polish PPT Decks
+# Build and Polish PPT Decks
 
-Turn an existing PPTX into an editable, visually coherent deck through a repeatable template-preserving pipeline.
+Turn user-supplied content into an editable, coherent presentation, or refine an existing PPTX through a repeatable template-aware pipeline.
 
 ## Required skills
 
 1. Use the `presentations` skill for every PPTX operation and read its complete `SKILL.md`.
 2. Use the `imagegen` skill when a slide needs a new raster hero, illustration, texture, or cutout.
 3. Do not use this skill to create a native Google Slides file; follow the routing in the presentations skill.
+
+## Choose the operating mode
+
+Choose exactly one primary mode before authoring:
+
+- **Build from content**: the user uploads a content-heavy PPT/PPTX, document, outline, notes, or mixed materials and wants a new deck. Extract the authorized content, design the narrative, divide it into slides, then generate the PPTX.
+- **Restructure an existing deck**: the user wants the current content retained but permits slide splitting, merging, reordering, and rewriting.
+- **Polish in place**: the slide sequence and content are already approved; improve design, visuals, notes, and consistency without changing the narrative.
+
+The same PPTX may be both a content source and a template source when the user wants to keep its branding. Record both roles explicitly rather than treating the rendered pages as finished slide content.
 
 ## Mandatory visual contract
 
@@ -40,14 +50,30 @@ Default every older PPT, screenshot, example page, and inspiration deck to **sty
 - Generated images must contain no copy, labels, legends, numbers, logos, or watermarks. Add all semantic text as editable slide objects.
 - If content provenance is ambiguous, preserve the current source deck's content and use the reference only for visual direction.
 
+## Content-to-deck planning
+
+For **Build from content** and **Restructure an existing deck**, do not start with slide drawing.
+
+1. Extract all authorized text, speaker notes, tables, chart labels, image captions, and source-slide references into `content-inventory.json`.
+2. Write a concise communication brief: audience, deck job, desired outcome, central takeaway, duration, language, and constraints.
+3. Remove exact duplication, but do not silently discard required facts, examples, evidence, caveats, or conclusions.
+4. Create `slide-blueprint.json` using the schema in [content-to-deck.md](references/content-to-deck.md). Each slide must have one narrative job, one primary claim, mapped source-unit IDs, a layout intent, and a visual job.
+5. Split dense source pages when they contain multiple claims. Merge source pages only when they repeat the same narrative beat. Do not preserve the source page count mechanically.
+6. Keep every factual claim traceable to a supplied content unit or an explicitly approved external source. Never invent metrics, cases, quotes, customers, outcomes, or technical facts.
+7. Run `scripts/validate_content_plan.mjs <slide-blueprint.json>` before authoring. Resolve every missing required content unit, unknown source ID, duplicate slide number, empty claim, and invalid source mapping.
+8. Use the validated blueprint to generate editable slides and presenter notes. Re-run the validator after any structural revision.
+
+Read [content-to-deck.md](references/content-to-deck.md) whenever content must be divided, reordered, condensed, expanded, or converted into a new presentation.
+
 ## Core workflow
 
-1. Classify every input as content source, template source, or style-only reference.
-2. Inspect the complete source deck and render every source slide.
-3. Define the communication job and identify the weakest slide families: cover, comparisons, processes, metrics, cases, closing, or notes.
-4. Before authoring slides, write `<task-workspace>/visual-plan.md`. Map every slide to its visual job, selected treatment, and asset status. Illustration coverage is determined by eligible page type, not by a fixed quota: every visually empty card, statement, comparison, process, ladder, case, closing, or Q&A page must receive topic-specific illustrations or a documented native visual alternative.
-5. Build a template frame map and starter deck using the presentations skill's template-following scripts.
-6. Initialize a task workspace and configure the presentations runtime:
+1. Classify every input as content source, template source, or style-only reference, then choose the operating mode.
+2. Inspect every authorized content source. Render all supplied PPTX files and extract their editable content and speaker notes.
+3. For build or restructure mode, create and validate `content-inventory.json` and `slide-blueprint.json`. For polish-in-place mode, preserve the approved page sequence.
+4. Define the communication job and identify the required slide families: opening, context, claims, evidence, comparisons, processes, metrics, cases, conclusion, discussion, or closing.
+5. Before authoring slides, write `<task-workspace>/visual-plan.md`. Map every planned output slide—not every source page—to its visual job, selected treatment, and asset status. Illustration coverage is determined by eligible page type, not by a fixed quota.
+6. Build a template frame map and starter deck using the presentations skill's template-following scripts. When the output needs more slides, duplicate validated source frames or layouts; do not flatten source slides.
+7. Initialize a task workspace and configure the presentations runtime:
 
    ```bash
    node scripts/init_deck_workspace.mjs \
@@ -58,7 +84,7 @@ Default every older PPT, screenshot, example page, and inspiration deck to **sty
      --workspace <task-workspace>
    ```
 
-7. Write a deck-specific `transform.mjs` in the task workspace. Export one default async function:
+8. Write a deck-specific `transform.mjs` in the task workspace. Export one default async function:
 
    ```js
    export default async function transform({ presentation, workspace, helpers }) {
@@ -68,7 +94,7 @@ Default every older PPT, screenshot, example page, and inspiration deck to **sty
    }
    ```
 
-8. Run the transform engine:
+9. Run the transform engine:
 
    ```bash
    node <task-workspace>/pipeline/run_transform.mjs \
@@ -78,10 +104,10 @@ Default every older PPT, screenshot, example page, and inspiration deck to **sty
      --out <final.pptx>
    ```
 
-9. Render the final PPTX with LibreOffice, inspect every affected slide at full size, run overflow, template fidelity, visual-coverage, and editability checks.
-10. Run `<task-workspace>/pipeline/validate_visual_details.mjs <task-workspace>/final-layout` to reject wrapped two-digit badges, undersized compact-token text boxes, repeated peer-card groups that are visibly off-center, illustrated comparison cards whose visual content is too sparse, and malformed hub diagrams.
-11. For asset sheets, never slice fixed grid cells directly. Run `scripts/recrop_illustration_sheets.mjs` so complete connected subjects are recovered across nominal cell boundaries, then run `scripts/validate_illustration_assets.mjs <tile-dir> --require-recrop-report`. Reject detached fragments, suspicious flat clipping edges, missing crop provenance, or incomplete silhouettes. If only detached fragments need cleanup, write a new asset directory with `--output-dir`; missing subject pixels require recropping or regeneration.
-12. Iterate until all hierarchy, wrapping, crop, contrast, connector, footer, logo, placeholder, notes, visual-coverage, and editability issues are resolved.
+10. Render the final PPTX with LibreOffice, inspect every slide at full size, run content-coverage, overflow, template fidelity, visual-coverage, and editability checks.
+11. Run `<task-workspace>/pipeline/validate_visual_details.mjs <task-workspace>/final-layout` to reject wrapped two-digit badges, undersized compact-token text boxes, repeated peer-card groups that are visibly off-center, illustrated comparison cards whose visual content is too sparse, and malformed hub diagrams.
+12. For asset sheets, never slice fixed grid cells directly. Run `scripts/recrop_illustration_sheets.mjs` so complete connected subjects are recovered across nominal cell boundaries, then run `scripts/validate_illustration_assets.mjs <tile-dir> --require-recrop-report`. Reject detached fragments, suspicious flat clipping edges, missing crop provenance, or incomplete silhouettes. If only detached fragments need cleanup, write a new asset directory with `--output-dir`; missing subject pixels require recropping or regeneration.
+13. Iterate until all content mapping, narrative, hierarchy, wrapping, crop, contrast, connector, footer, logo, placeholder, notes, visual-coverage, and editability issues are resolved.
 
 Read [workflow.md](references/workflow.md) for the full command sequence.
 Read [visual-coverage.md](references/visual-coverage.md) before generating or selecting visual assets.
@@ -149,6 +175,9 @@ Read [transform-patterns.md](references/transform-patterns.md) for reusable auth
 Do not deliver until:
 
 - Every slide renders.
+- In build or restructure mode, `slide-blueprint.json` passes `scripts/validate_content_plan.mjs`, and every required source unit appears on at least one output slide.
+- The final slide order follows the validated narrative arc; source-page order is not preserved merely for convenience.
+- Every content slide has one explicit primary claim and advances the story.
 - `<task-workspace>/visual-plan.md` exists and the delivered deck follows it, or deviations are recorded.
 - Every eligible card, statement, comparison, process, ladder, case, closing, and Q&A slide contains meaningful topic-specific illustrations or a documented native visual alternative.
 - Fixed illustration quotas are not a completion criterion. Coverage must follow the slide audit and continue until no visually empty eligible page remains.

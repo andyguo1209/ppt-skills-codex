@@ -26,6 +26,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 for (const fileName of [
   "helpers.mjs",
   "run_transform.mjs",
+  "validate_content_plan.mjs",
   "validate_prompter.mjs",
   "validate_editability.mjs",
   "validate_visual_details.mjs",
@@ -44,6 +45,8 @@ const textFiles = {
   "input-role-map.txt":
     "Classify each supplied file as CONTENT SOURCE, TEMPLATE SOURCE, or STYLE-ONLY REFERENCE.\\n",
   "source-notes.txt": "Source and claim provenance\n",
+  "communication-brief.txt":
+    "Audience:\nDeck job:\nAudience outcome:\nCentral takeaway:\nDuration:\nLanguage and tone:\nConstraints:\n",
   "prompt-record.txt": "Image generation prompts and selected outputs\n",
   "deviation-log.txt": "Intentional departures from inherited template slides\n",
 };

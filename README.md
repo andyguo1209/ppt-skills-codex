@@ -1,14 +1,18 @@
 # polish-ppt-decks
 
-一套面向 Codex 的 PowerPoint 视觉精修 Skill。
+一套面向 Codex 的可编辑 PowerPoint 生成与视觉精修 Skill。
 
-它不是固定模板，也不是“一键换皮”工具，而是一套可复用的 PPT 制作流水线：在保留用户原始模板、Logo、页脚和可编辑结构的前提下，让 Codex 完成逐页诊断、视觉重构、图片生成、演讲者备注、渲染检查和模板完整性验证。
+它不只是美化工具。用户可以上传内容型 PPT、讲稿、提纲或混合资料，Skill 会先提取和盘点内容，再设计叙事、切分逐页主题、生成可编辑 PPT；如果用户上传的是已有成品稿，也可以保留模板、Logo 和页脚进行视觉精修。
 
 > **重要默认规则：参考 PPT 和截图只用于学习风格，不用于提取内容。**
 > 未经用户明确授权，不复制参考稿的文字、数据、案例、图表、故事线或页面顺序。最终标题、正文、卡片、流程、图表和页码必须是 PowerPoint 原生可编辑对象，不接受整页截图或整页生图。
 
 ## 能做什么
 
+- 从用户上传的 PPT、文稿、提纲和备注中提取授权内容
+- 把内容整理为叙事主线并切分成逐页蓝图
+- 自动检查必讲内容是否遗漏、重复或失去来源映射
+- 根据内容和用户模板生成一套新的可编辑 PPT
 - 美化现有 `.pptx`，保留原始模板和母版结构
 - 重构正式文字型封面、卡片、流程、指标、案例和收尾页
 - 统一颜色、层级、留白、图标和图片风格
@@ -23,13 +27,14 @@
 
 ## 核心原则
 
-1. **保留模板，而不是重新套模板**
-2. **先诊断问题，再增加视觉元素**
-3. **优先做减法，避免层级和装饰堆叠**
-4. **参考稿默认只参考风格，不带入内容**
-5. **图片只负责背景、照片、纹理或无文字插画**
-6. **所有语义文字和结构必须原生可编辑**
-7. **每次修改都经过完整渲染和 QA**
+1. **先理解内容，再决定页数和版式**
+2. **每页只有一个主要叙事任务和核心结论**
+3. **必讲内容必须可追踪，不能在拆页过程中丢失**
+4. **保留模板，而不是重新套模板**
+5. **参考稿默认只参考风格，不带入内容**
+6. **图片只负责背景、照片、纹理或无文字插画**
+7. **所有语义文字和结构必须原生可编辑**
+8. **每次生成都经过内容、渲染和视觉 QA**
 
 ## 封面原则
 
@@ -53,11 +58,13 @@
     │   ├── init_deck_workspace.mjs
     │   ├── recrop_illustration_sheets.mjs
     │   ├── run_transform.mjs
+    │   ├── validate_content_plan.mjs
     │   ├── validate_editability.mjs
     │   ├── validate_illustration_assets.mjs
     │   ├── validate_prompter.mjs
     │   └── validate_visual_details.mjs
     └── references/
+        ├── content-to-deck.md
         ├── design-rules.md
         ├── transform-patterns.md
         ├── visual-coverage.md
@@ -91,6 +98,22 @@ git push -u origin main
 如果远程仓库已经包含 README 或其他提交，请先拉取并处理历史差异，不要直接强制推送覆盖。
 
 ## 使用示例
+
+### 根据上传内容生成 PPT
+
+```text
+$polish-ppt-decks 根据我上传的内容稿生成一套PPT。
+先梳理叙事并切分每页要讲的内容，再使用我提供的模板生成，
+所有标题、正文、图表和结构都要可编辑。
+```
+
+### 重新编排内容型 PPT
+
+```text
+$polish-ppt-decks 这份PPT主要是内容素材，不要保留原页数。
+提取全部必讲内容，合并重复部分、拆分过密页面，
+重新生成一套逻辑完整、适合30分钟分享的可编辑PPT。
+```
 
 ### 美化现有 PPT
 
@@ -126,7 +149,15 @@ $polish-ppt-decks 检查所有卡片页和流程页。
 Skill 会引导 Codex执行以下流程：
 
 ```text
-检查原始PPT
+识别任务模式
+    ↓
+提取授权内容与来源
+    ↓
+建立内容清单
+    ↓
+设计叙事与逐页蓝图
+    ↓
+检查内容覆盖
     ↓
 建立模板映射
     ↓
@@ -148,6 +179,7 @@ Skill 会引导 Codex执行以下流程：
 其中：
 
 - `init_deck_workspace.mjs` 创建标准工作区
+- `validate_content_plan.mjs` 检查逐页蓝图、内容覆盖和来源映射
 - `run_transform.mjs` 运行当前 PPT 的页面修改逻辑
 - `helpers.mjs` 提供图片、形状、备注和 QA 辅助函数
 - `validate_prompter.mjs` 检查演讲者备注格式
@@ -193,6 +225,7 @@ Skill 本身不包含任何模型 API Key，也不要求把 API Key 写入仓库
 - 45 页 PPT 导入、逐页渲染和重新导出
 - 45 页演讲者备注格式检查
 - 可编辑性与疑似扁平化页面检测
+- 内容清单、逐页蓝图和必讲内容覆盖验证
 
 ## 限制
 
@@ -211,4 +244,4 @@ Skill 本身不包含任何模型 API Key，也不要求把 API Key 写入仓库
 
 ## 推荐仓库简介
 
-> A Codex Skill for template-preserving PowerPoint beautification, AI-generated visuals, editable slide transforms, presenter notes, and automated presentation QA.
+> A Codex Skill for turning uploaded content into structured editable PowerPoint decks, preserving templates, generating visuals, adding presenter notes, and running automated content and presentation QA.
